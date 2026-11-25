@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrivacyGuard - Anonymization Tool</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f1f5f9;
+  color: #172554;
+}
+
+header {
+  background: #101d3b;
+  color: white;
+  padding: 25px;
+  text-align: center;
+}
+
+header h1 {
+  color: #55d6be;
+}
+
+.hero {
+  text-align: center;
+  padding: 45px 15px;
+}
+
+.hero h2 {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.hero p {
+  color: #64748b;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px #0001;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin: 18px 0 10px;
+}
+
+textarea {
+  width: 100%;
+  height: 150px;
+  padding: 15px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+button {
+  padding: 13px 20px;
+  margin: 12px 5px 12px 0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.primary {
+  background: #087f75;
+  color: white;
+}
+
+.secondary {
+  background: #e2e8f0;
+  color: #172554;
+}
+
+#result {
+  background: #f0fdfa;
+  padding: 18px;
+  min-height: 100px;
+  border-radius: 10px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+
+.stats {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.stat {
+  flex: 1;
+  background: #f1f5f9;
+  padding: 18px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.stat h2 {
+  color: #087f75;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #64748b;
+}
+
+@media(max-width:600px) {
+  .stats {
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🛡 PrivacyGuard</h1>
+  <p>Your Personal Data Protection Tool</p>
+</header>
+
+<section class="hero">
+  <h2>Data Anonymization</h2>
+  <p>Protect your personal information with one click.</p>
+</section>
+
+<div class="container">
+
+  <h2>🔐 Protect Your Information</h2>
+
+  <label>Enter Your Text</label>
+
+  <textarea id="inputText"
+  placeholder="Enter your name, email, phone number or Aadhaar number..."></textarea>
+
+  <button class="primary" onclick="anonymize()">
+    Anonymize Data
+  </button>
+
+  <button class="secondary" onclick="clearData()">
+    Clear
+  </button>
+
+  <label>Anonymized Output</label>
+
+  <div id="result">
+    Your protected data will appear here.
+  </div>
+
+  <button class="secondary" onclick="copyData()">
+    Copy Result
+  </button>
+
+  <div class="stats">
+    <div class="stat">
+      <h2 id="count">0</h2>
+      <p>Items Protected</p>
+    </div>
+
+    <div class="stat">
+      <h2>100%</h2>
+      <p>Browser Processing</p>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;color:#64748b;font-size:13px">
+    Your text is processed locally in your browser.
+    This demo does not upload your text to a server.
+  </p>
+
+</div>
+
+<footer>
+  © 2026 PrivacyGuard | Privacy Matters
+</footer>
+
+<script>
+
+function anonymize() {
+
+  let text = document.getElementById("inputText").value;
+
+  if (!text.trim()) {
+    alert("Please enter some text!");
+    return;
+  }
+
+  let count = 0;
+
+  function replaceData(pattern, replacement) {
+    text = text.replace(pattern, function() {
+      count++;
+      return replacement;
+    });
+  }
+
+  // Hide email addresses
+  replaceData(
+    /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi,
+    "[EMAIL HIDDEN]"
+  );
+
+  // Hide Indian mobile numbers
+  replaceData(
+    /(?:\+91[\s-]?)?[6-9]\d{9}\b/g,
+    "[PHONE HIDDEN]"
+  );
+
+  // Hide Aadhaar-like numbers
+  replaceData(
+    /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g,
+    "[AADHAAR HIDDEN]"
+  );
+
+  // Hide password values
+  replaceData(
+    /\bpassword\s*[:=]\s*\S+/gi,
+    "password: [HIDDEN]"
+  );
+
+  document.getElementById("result").textContent = text;
+
+  document.getElementById("count").textContent = count;
+}
+
+function clearData() {
+  document.getElementById("inputText").value = "";
+
+  document.getElementById("result").textContent =
+    "Your protected data will appear here.";
+
+  document.getElementById("count").textContent = "0";
+}
+
+function copyData() {
+  let text = document.getElementById("result").textContent;
+
+  if (text === "Your protected data will appear here.") {
+    alert("Please anonymize your data first!");
+    return;
+  }
+
+  navigator.clipboard.writeText(text)
+    .then(() => alert("Copied successfully!"))
+    .catch(() => alert("Copy failed. Please copy manually."));
+}
+
+</script>
+
+</body>
+</html>
